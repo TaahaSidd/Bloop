@@ -1,8 +1,11 @@
 package com.spicalabs.bloop.service;
 
+import com.spicalabs.bloop.dto.request.MemeRequest;
 import com.spicalabs.bloop.dto.response.MemeResponse;
+import com.spicalabs.bloop.entity.Category;
 import com.spicalabs.bloop.entity.Meme;
 import com.spicalabs.bloop.mapper.DtoMapper;
+import com.spicalabs.bloop.repository.CategoryRepo;
 import com.spicalabs.bloop.repository.MemeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +21,24 @@ import java.util.stream.Collectors;
 public class MemeService {
 
     private final MemeRepo memeRepo;
+    private final CategoryRepo categoryRepo;
     private final DtoMapper dtoMapper;
+
+    //Add memes.
+    public MemeResponse createMeme(MemeRequest req) {
+        Category category = categoryRepo.findById(req.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category with ID " + req.getCategoryId() + "not found"));
+
+        Meme meme = Meme.builder()
+                .title(req.getTitle())
+                .imageUrl(req.getImageUrl())
+                .category(category)
+                .soundUrl(req.getSoundUrl())
+                .build();
+
+        Meme savedMeme = memeRepo.save(meme);
+        return dtoMapper.toMemeResponse(savedMeme);
+    }
 
     //Get all Memes
     public List<MemeResponse> getAllMemes() {
