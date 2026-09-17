@@ -1,14 +1,23 @@
 package com.spicalabs.bloop.controller;
 
 
-import com.spicalabs.bloop.dto.response.MemeResponse;
-import com.spicalabs.bloop.service.MemeService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.spicalabs.bloop.dto.request.MemeRequest;
+import com.spicalabs.bloop.dto.response.MemeResponse;
+import com.spicalabs.bloop.service.MemeService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/memes")
@@ -16,6 +25,12 @@ import java.util.UUID;
 public class MemeController {
 
     private final MemeService memeService;
+
+
+    @PostMapping
+    public ResponseEntity<MemeResponse> createMeme(@RequestBody MemeRequest req){
+        return ResponseEntity.ok(memeService.createMeme(req));
+    }
 
     // GET /api/v1/memes OR /api/v1/memes?category=slug
     @GetMapping
